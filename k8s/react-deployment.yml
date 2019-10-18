@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alc-react-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: alc-react-app
+  template:
+    metadata:
+      labels:
+        app: alc-react-app
+    spec:
+      containers:
+        - name: alc-react-app
+          image: gcr.io/mentorship-220812/alc-react:v1
+          command:
+            - nginx
+            - -g
+            - daemon off;
+          ports:
+            - containerPort: 80
