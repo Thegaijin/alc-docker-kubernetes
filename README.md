@@ -37,32 +37,42 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Learn More
+## Containerisation and Deployment
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Create the docker image.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+To create the docker image, make sure you're in the project root directory and run the command below
 
-### Code Splitting
+`docker build -t [image_name]:[tag] .`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+If you want to push the image to an image registry, you should tag it as follows;
 
-### Analyzing the Bundle Size
+| GGR                                        | Docker                                            |
+| ------------------------------------------ | ------------------------------------------------- |
+| `gcr.io/[project_name]/[image_name]:[tag]` | `docker.com/[repository_name]/[image_name]:[tag]` |
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+### Setup the GCP on your local computer and create the cluster
 
-### Making a Progressive Web App
+Install google cloud SDK on your machine and log into your project following the steps [here](https://cloud.google.com/sdk/docs/quickstarts) as per your use case
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+Once that's done, head over to the gcp console and create a cluster. This can also be done by running a command.
 
-### Advanced Configuration
+`gcloud container clusters create [CLUSTER_NAME] --zone [COMPUTE_ZONE]`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+When the cluster is ready, run this command in the terminal where you installed the gcloud sdk.
 
-### Deployment
+`gcloud container clusters get-credentials [CLUSTER_NAME] --zone [[COMPUTE_ZONE] --project [PROJECT_NAME]`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+After settingg the cluster context with the above command, making sure you are in the project root, run this command to deploy the application to kubernetes
 
-### `npm run build` fails to minify
+`kubectl apply -f k8s/`
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The command above will run the yaml configurations in the k8s/ folder against the cluster you created and create a deployment workload as well as a service. After a few moments you should be able to see the created resources by running these commands;
+
+`kubectl get pods`
+
+`kubectl get svc`
+
+On the results of the svc command you should see an external IP column and an IP there, if it's still pending waiting a few more seconds and run the command again. When the IP appears, paste it into your browser, you should be able to see the application running. In my case it's running at
+
+> http://35.187.111.12/

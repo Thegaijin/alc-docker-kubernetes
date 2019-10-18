@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: alc-react-app
-          image: gcr.io/mentorship-220812/alc-react:v1
+          image: eu.gcr.io/mentorship-220812/alc-react:v1
           command:
             - nginx
             - -g
